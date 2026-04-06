@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>StockFlow | Controla tu inventario y ventas sin complicarte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="StockFlow es la app de gestión de inventario y ventas para pequeños negocios en Ecuador. Controla productos, combos, precios por volumen y reportes desde tu celular o web." />
+  <meta name="author" content="Cristhian Loor" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --sf-primary: #C1356F;
+      --sf-secondary: #597FA9;
+      --sf-accent: #E57836;
+      --sf-bg-light: #FBF8F1;
+      --sf-bg-dark: #1A1A2E;
+      --sf-text-main: #111827;
+      --sf-radius-xl: 1.75rem;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, rgba(193,53,111,0.08), transparent 55%), radial-gradient(circle at top right, rgba(89,127,169,0.12), transparent 60%), var(--sf-bg-light);
+      color: var(--sf-text-main);
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .sf-container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .sf-container {
+        padding: 0 1.25rem;
+      }
+    }
+
+    .sf-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .25rem .75rem;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 500;
+      background: rgba(193,53,111,0.08);
+      color: var(--sf-primary);
+    }
+
+    .sf-badge {
+      border-radius: 999px;
+      padding: .25rem .75rem;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .glass-card {
+      background: rgba(255,255,255,0.9);
+      border-radius: 1.5rem;
+      border: 1px solid rgba(15,23,42,0.06);
+      box-shadow: 0 22px 45px rgba(15,23,42,0.12);
+      backdrop-filter: blur(18px);
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      line-height: 1.2;
+    }
+
+    @media (min-width: 768px) {
+      .section-title {
+        font-size: 2.15rem;
+      }
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #C1356F, #E57836);
+      color: #fff;
+      padding: .75rem 1.25rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: .95rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      box-shadow: 0 14px 35px rgba(193,53,111,0.35);
+      transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 45px rgba(193,53,111,0.4);
+      filter: brightness(1.03);
+    }
+
+    .btn-ghost {
+      padding: .75rem 1rem;
+      border-radius: 999px;
+      font-weight: 500;
+      font-size: .9rem;
+      border: 1px solid rgba(17,24,39,0.08);
+      background: rgba(255,255,255,0.85);
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      transition: background .15s ease, border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+    }
+
+    .btn-ghost:hover {
+      background: #fff;
+      border-color: rgba(193,53,111,0.45);
+      box-shadow: 0 12px 25px rgba(15,23,42,0.12);
+      transform: translateY(-1px);
+    }
+
+    nav.sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(to bottom, rgba(251,248,241,0.88), rgba(251,248,241,0.85), rgba(251,248,241,0.78));
+      border-bottom: 1px solid rgba(15,23,42,0.04);
+    }
+
+    .mobile-nav-toggle {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid rgba(17,24,39,0.08);
+      background: rgba(255,255,255,0.88);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #0f172a;
+      box-shadow: 0 10px 24px rgba(15,23,42,0.08);
+    }
+
+    .mobile-nav {
+      display: none;
+      padding: 0 0 1rem;
+    }
+
+    .mobile-nav.open {
+      display: block;
+    }
+
+    .mobile-nav a {
+      display: block;
+      padding: .85rem 1rem;
+      border-radius: 1rem;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(15,23,42,0.06);
+      font-size: .95rem;
+      color: #1e293b;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+
+    @media (min-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, .95fr);
+        align-items: center;
+      }
+    }
+
+    .hero-phone {
+      border-radius: 2.3rem;
+      padding: .75rem;
+      background: linear-gradient(145deg, rgba(17,24,39,0.96), #111827);
+      box-shadow: 0 28px 75px rgba(15,23,42,0.6);
+      border: 1px solid rgba(148,163,184,0.45);
+      width: min(100%, 320px);
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .hero-phone-inner {
+      background: radial-gradient(circle at top left, rgba(193,53,111,0.38), transparent 55%), radial-gradient(circle at bottom right, rgba(89,127,169,0.4), transparent 55%), #020617;
+      border-radius: 1.9rem;
+      padding: .9rem .85rem 1.05rem;
+      height: 560px;
+      display: flex;
+      flex-direction: column;
+      color: #e5e7eb;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      padding: .25rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.4);
+    }
+
+    .hero-tab {
+      flex: 1;
+      padding: .3rem .4rem;
+      border-radius: 999px;
+      font-size: .68rem;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      color: #9ca3af;
+      transition: background .15s ease, color .15s ease;
+    }
+
+    .hero-tab.active {
+      background: linear-gradient(135deg, #C1356F, #E57836);
+      color: #fff;
+    }
+
+    .phone-stat-pill {
+      border-radius: 999px;
+      padding: .35rem .7rem;
+      font-size: .7rem;
+      border: 1px solid rgba(148,163,184,0.45);
+      background: rgba(15,23,42,0.85);
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .phone-screen {
+      min-width: 0;
+    }
+
+    .feature-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: .9rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .95rem;
+      color: #fff;
+    }
+
+    .price-card {
+      border-radius: 1.5rem;
+      border: 1px solid rgba(15,23,42,0.08);
+      background: rgba(255,255,255,0.95);
+      padding: 1.5rem 1.4rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform .18s ease, box-shadow .18s ease, border .18s ease;
+    }
+
+    .price-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 22px 45px rgba(15,23,42,0.14);
+      border-color: rgba(193,53,111,0.55);
+    }
+
+    .price-card.pro {
+      background: radial-gradient(circle at top left, rgba(193,53,111,0.16), transparent 55%), radial-gradient(circle at bottom right, rgba(89,127,169,0.16), transparent 55%), #ffffff;
+      border-width: 2px;
+      border-color: rgba(193,53,111,0.7);
+      box-shadow: 0 26px 55px rgba(193,53,111,0.22);
+    }
+
+    .faq-item {
+      border-radius: 1rem;
+      border: 1px solid rgba(15,23,42,0.06);
+      background: rgba(255,255,255,0.9);
+      padding: 1rem 1rem;
+      cursor: pointer;
+      transition: background .15s ease, box-shadow .15s ease, border .15s ease;
+    }
+
+    .faq-item.open {
+      background: #ffffff;
+      box-shadow: 0 16px 35px rgba(15,23,42,0.12);
+      border-color: rgba(193,53,111,0.4);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height .25s ease, opacity .2s ease;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 260px;
+      opacity: 1;
+      margin-top: .45rem;
+    }
+
+    .chip {
+      border-radius: 999px;
+      padding: .18rem .5rem;
+      font-size: .7rem;
+      background: rgba(148,163,184,0.12);
+      color: #4b5563;
+    }
+
+    .tag-dot {
+      width: .45rem;
+      height: .45rem;
+      border-radius: 999px;
+    }
+
+    @keyframes float-slow {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+      100% { transform: translateY(0px); }
+    }
+    .float-slow {
+      animation: float-slow 7s ease-in-out infinite;
+    }
+
+    .scroll-fade {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+
+    .scroll-fade.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toggle-switch {
+      width: 46px;
+      height: 24px;
+      border-radius: 999px;
+      padding: 3px;
+      background: rgba(148,163,184,0.6);
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      transition: background .2s ease;
+    }
+    .toggle-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: white;
+      transform: translateX(0);
+      transition: transform .2s ease;
+      box-shadow: 0 5px 10px rgba(15,23,42,0.35);
+    }
+    .toggle-switch.on {
+      background: linear-gradient(135deg, #C1356F, #E57836);
+    }
+    .toggle-switch.on .toggle-thumb {
+      transform: translateX(20px);
+    }
+
+    footer {
+      background: #0b1020;
+      color: #9ca3af;
+    }
+
+    @media (max-width: 767px) {
+      .btn-primary,
+      .btn-ghost {
+        min-height: 46px;
+      }
+
+      nav .leading-tight span:last-child {
+        display: none;
+      }
+
+      .hero-phone {
+        max-width: 100%;
+      }
+
+      .hero-phone-inner {
+        height: auto;
+        min-height: 520px;
+      }
+
+      .phone-stat-pill {
+        max-width: 100%;
+      }
+
+      .faq-item h3,
+      .faq-answer {
+        max-width: calc(100vw - 5.75rem);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .section-title {
+        font-size: 1.55rem;
+      }
+
+      .hero-tabs {
+        border-radius: 1.1rem;
+      }
+
+      .hero-tab {
+        min-width: 100%;
+        font-size: .72rem;
+      }
+    }
+  </style>
+</head>
+<body class="text-slate-900">
+  <nav class="sticky-nav">
+    <div class="sf-container flex items-center justify-between gap-3 py-3.5">
+      <a href="#top" class="flex items-center gap-2 min-w-0">
+        <img src="logo stock flow.png" alt="Logo de StockFlow" class="w-9 h-9 rounded-2xl object-cover shadow-lg shadow-rose-400/40" />
+        <div class="flex flex-col leading-tight min-w-0">
+          <span class="font-semibold tracking-tight text-slate-900 text-sm sm:text-base">StockFlow</span>
+          <span class="text-[11px] text-slate-500 -mt-[1px]">Control de inventario para tu día a día</span>
+        </div>
+      </a>
+      <div class="hidden md:flex items-center gap-8 text-sm">
+        <a href="#problema" class="text-slate-700 hover:text-slate-900">Por qué StockFlow</a>
+        <a href="#features" class="text-slate-700 hover:text-slate-900">Beneficios</a>
+        <a href="#precios" class="text-slate-700 hover:text-slate-900">Precios</a>
+        <a href="#faq" class="text-slate-700 hover:text-slate-900">Preguntas</a>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <button class="hidden md:inline-flex btn-ghost">
+          <span>Iniciar sesión</span>
+        </button>
+        <a href="#cta" class="hidden sm:inline-flex btn-primary text-xs md:text-sm">
+          Empezar gratis
+        </a>
+        <button type="button" class="mobile-nav-toggle md:hidden" data-mobile-nav-toggle aria-expanded="false" aria-controls="mobile-nav" aria-label="Abrir menÃº">
+          <span class="text-lg leading-none">☰</span>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-nav" class="mobile-nav md:hidden sf-container">
+      <div class="grid gap-2">
+        <a href="#problema">Por quÃ© StockFlow</a>
+        <a href="#features">Beneficios</a>
+        <a href="#precios">Precios</a>
+        <a href="#faq">Preguntas</a>
+        <a href="#cta" class="btn-primary justify-center text-sm">Empezar gratis</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <section class="pt-8 pb-14 md:pt-14 md:pb-20">
+      <div class="sf-container hero-grid gap-8">
+        <div class="flex flex-col justify-center">
+          <div class="flex flex-wrap items-center gap-2 mb-4">
+            <div class="sf-pill">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span>Lanza y controla tu inventario en menos de 10 minutos</span>
+            </div>
+            <span class="chip flex items-center gap-1">
+              <span class="tag-dot bg-[#C1356F]"></span>
+              Pensado para negocios en Ecuador
+            </span>
+          </div>
+          <h1 class="text-[1.9rem] leading-tight sm:text-[2.2rem] md:text-[2.7rem] font-extrabold tracking-tight mb-3 text-slate-900">
+            Tu inventario, ventas y precios, en una sola app fácil de usar.
+          </h1>
+          <p class="text-slate-600 text-sm sm:text-base max-w-xl mb-6">
+            StockFlow te ayuda a saber en todo momento qué tienes, cuánto vale tu inventario y cuánto estás vendiendo. Sin hojas de Excel, sin enredos, desde tu celular o la web.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center mb-4">
+            <a href="#cta" class="btn-primary w-full sm:w-auto justify-center">
+              Crear cuenta gratis
+              <span class="text-xs font-normal bg-white/10 rounded-full px-2 py-[2px]">Sin tarjeta</span>
+            </a>
+            <button class="btn-ghost w-full sm:w-auto justify-center" onclick="document.querySelector('#como-funciona').scrollIntoView({behavior:'smooth'})">
+              Ver cómo funciona
+              <span class="text-xs">2 min</span>
+            </button>
+          </div>
+          <div class="flex flex-wrap items-center gap-4 text-[11px] sm:text-xs text-slate-500">
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-[13px]">✓</span>
+              <span>Ideal para tiendas, bazares, minimarkets y emprendedores</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-sky-500/10 text-sky-600 flex items-center justify-center text-[13px]">✓</span>
+              <span>Pagos con PayPhone (Ecuador)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative">
+          <div class="absolute -top-4 -right-3 md:-right-6 w-32 h-32 bg-gradient-to-tr from-[#C1356F]/25 via-[#597FA9]/40 to-transparent rounded-full blur-3xl opacity-80"></div>
+          <div class="absolute bottom-0 -left-6 w-24 h-24 bg-gradient-to-tr from-[#E57836]/35 to-transparent rounded-full blur-2xl opacity-80"></div>
+
+          <div class="hero-phone float-slow relative z-10">
+            <div class="hero-phone-inner">
+              <div class="flex items-center justify-between mb-3 text-[10px] text-slate-400">
+                <span>StockFlow</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                  <span>Tu negocio al día</span>
+                </div>
+              </div>
+
+              <div class="hero-tabs mb-3">
+                <button class="hero-tab active" data-screen="dashboard">Inicio</button>
+                <button class="hero-tab" data-screen="inventario">Inventario</button>
+                <button class="hero-tab" data-screen="precios">Precios &amp; combos</button>
+              </div>
+
+              <div id="screen-dashboard" class="phone-screen flex-1 flex flex-col">
+                <div class="flex justify-between items-center mb-2">
+                  <div class="flex flex-col">
+                    <span class="text-[11px] text-slate-400">Hoy</span>
+                    <span class="text-sm font-semibold text-slate-50">Resumen de tu negocio</span>
+                  </div>
+                  <div class="toggle-switch on scale-90">
+                    <div class="toggle-thumb"></div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 mb-2.5">
+                  <div class="rounded-xl bg-slate-900/60 border border-slate-700/60 p-2.5 flex flex-col justify-between">
+                    <span class="text-[10px] text-slate-400 mb-1">Valor total inventario</span>
+                    <span class="text-xs text-slate-200 mb-1">$ 4.560,40</span>
+                    <div class="flex items-center justify-between text-[9px] text-emerald-400">
+                      <span class="flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        +8% esta semana
+                      </span>
+                      <span class="text-slate-500">Act.</span>
+                    </div>
+                  </div>
+                  <div class="rounded-xl bg-gradient-to-br from-[#C1356F]/70 via-[#E57836]/70 to-[#597FA9]/80 p-2.5 flex flex-col justify-between shadow-lg shadow-rose-500/40">
+                    <span class="text-[10px] text-rose-50/90 mb-1">Ventas del mes</span>
+                    <span class="text-xs text-white mb-1">$ 2.130,80</span>
+                    <div class="flex items-center justify-between text-[9px] text-rose-100">
+                      <span>32 tickets</span>
+                      <span>+12% vs. anterior</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between mb-1.5">
+                  <div class="phone-stat-pill">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                    <span class="text-[10px] text-slate-200">4 productos con stock bajo</span>
+                  </div>
+                  <span class="text-[10px] text-slate-500">Ver todo</span>
+                </div>
+
+                <div class="bg-slate-900/70 border border-slate-700/80 rounded-xl p-2.5 mb-2.5">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-[10px] text-slate-300">Últimas ventas</span>
+                    <span class="text-[9px] text-slate-500">Hoy</span>
+                  </div>
+                  <div class="space-y-1.2 text-[10px]">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-1.5">
+                        <span class="w-5 h-5 rounded-md bg-slate-800 flex items-center justify-center text-[9px] text-slate-200">#132</span>
+                        <div class="flex flex-col">
+                          <span class="text-[10px] text-slate-100">Combo snacks</span>
+                          <span class="text-[9px] text-slate-500">3 productos</span>
+                        </div>
+                      </div>
+                      <div class="text-right">
+                        <div class="text-[10px] text-emerald-400 font-medium">+$8,50</div>
+                        <div class="text-[9px] text-slate-500">15:34</div>
+                      </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-1.5">
+                        <span class="w-5 h-5 rounded-md bg-slate-800 flex items-center justify-center text-[9px] text-slate-200">#131</span>
+                        <div class="flex flex-col">
+                          <span class="text-[10px] text-slate-100">Agua 500ml x12</span>
+                          <span class="text-[9px] text-slate-500">venta por volumen</span>
+                        </div>
+                      </div>
+                      <div class="text-right">
+                        <div class="text-[10px] text-emerald-400 font-medium">+$6,00</div>
+                        <div class="text-[9px] text-slate-500">12:20</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-auto pt-2 border-t border-slate-800/80 flex items-center justify-between text-[9px] text-slate-500">
+                  <div class="flex items-center gap-3">
+                    <span class="flex flex-col items-center gap-0.5">
+                      <span class="w-4 h-4 rounded-md bg-slate-800 flex items-center justify-center text-[10px]">🏠</span>
+                      <span>Inicio</span>
+                    </span>
+                    <span class="flex flex-col items-center gap-0.5 text-slate-400">
+                      <span class="w-4 h-4 rounded-md bg-slate-900 flex items-center justify-center text-[10px]">📦</span>
+                      <span>Inventario</span>
+                    </span>
+                    <span class="flex flex-col items-center gap-0.5 text-slate-400">
+                      <span class="w-4 h-4 rounded-md bg-slate-900 flex items-center justify-center text-[10px]">📊</span>
+                      <span>Resumen</span>
+                    </span>
+                  </div>
+                  <span class="text-[8px] text-slate-600">Datos de prueba</span>
+                </div>
+              </div>
+
+              <div id="screen-inventario" class="phone-screen flex-1 flex-col hidden">
+                <div class="flex items-center justify-between mb-2">
+                  <div>
+                    <span class="text-[11px] text-slate-400">Inventario</span>
+                    <div class="flex items-center gap-1 text-[10px] text-slate-500">
+                      <span>28 productos</span>
+                      <span class="w-1 h-1 rounded-full bg-slate-600"></span>
+                      <span>$ 4.560,40</span>
+                    </div>
+                  </div>
+                  <button class="px-2 py-1 rounded-full bg-slate-900 border border-slate-700 text-[9px] flex items-center gap-1">
+                    <span class="w-3 h-3 rounded-full bg-emerald-500/30 flex items-center justify-center text-[9px] text-emerald-300">+</span>
+                    Nuevo
+                  </button>
+                </div>
+                <div class="bg-slate-900/70 border border-slate-700/80 rounded-xl p-2.5 mb-2">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="text-[10px] text-slate-300">Filtrar por categoría</span>
+                    <span class="text-[9px] text-slate-500">Todas</span>
+                  </div>
+                  <div class="flex flex-wrap gap-1.5 text-[9px]">
+                    <span class="px-2 py-1 rounded-full bg-slate-800 text-slate-100 border border-slate-600">Bebidas</span>
+                    <span class="px-2 py-1 rounded-full bg-slate-900 text-slate-400 border border-slate-700">Snacks</span>
+                    <span class="px-2 py-1 rounded-full bg-slate-900 text-slate-400 border border-slate-700">Limpieza</span>
+                  </div>
+                </div>
+                <div class="space-y-1.5 overflow-y-auto pr-1 text-[10px]">
+                  <div class="flex items-center justify-between bg-slate-900/70 border border-slate-700/70 rounded-lg p-2">
+                    <div class="flex items-center gap-1.5">
+                      <div class="w-6 h-6 rounded-md bg-gradient-to-br from-sky-500 to-blue-500 flex items-center justify-center text-[11px] text-white">Ag</div>
+                      <div>
+                        <div class="text-slate-100">Agua 500ml</div>
+                        <div class="text-[9px] text-slate-500">Proveedor: Aguas Andinas</div>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-[10px] text-slate-100">Stock: 48</div>
+                      <div class="text-[9px] text-emerald-400">$0,25 &gt; $0,50</div>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between bg-slate-900/70 border border-slate-700/70 rounded-lg p-2">
+                    <div class="flex items-center gap-1.5">
+                      <div class="w-6 h-6 rounded-md bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-[11px] text-white">Ga</div>
+                      <div>
+                        <div class="text-slate-100">Galletas surtidas</div>
+                        <div class="text-[9px] text-amber-300 flex items-center gap-1">
+                          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                          Stock bajo: 6
+                        </div>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-[10px] text-slate-100">$0,35 &gt; $0,70</div>
+                      <div class="text-[9px] text-slate-500">Snacks</div>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between bg-slate-900/70 border border-slate-700/70 rounded-lg p-2">
+                    <div class="flex items-center gap-1.5">
+                      <div class="w-6 h-6 rounded-md bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-[11px] text-white">Det</div>
+                      <div>
+                        <div class="text-slate-100">Detergente 1L</div>
+                        <div class="text-[9px] text-slate-500">Proveedor: LimpioMax</div>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-[10px] text-slate-100">Stock: 18</div>
+                      <div class="text-[9px] text-emerald-400">$1,10 &gt; $1,80</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-auto pt-2 border-t border-slate-800/80 flex items-center justify-between text-[9px] text-slate-500">
+                  <span>Todo conectado con tus ventas</span>
+                  <span class="text-[8px] text-slate-600">Actualiza en tiempo real</span>
+                </div>
+              </div>
+
+              <div id="screen-precios" class="phone-screen flex-1 flex-col hidden">
+                <div class="flex items-center justify-between mb-2">
+                  <div>
+                    <span class="text-[11px] text-slate-400">Precios &amp; Combos</span>
+                    <div class="text-[9px] text-slate-500">Aumenta tu ticket promedio</div>
+                  </div>
+                  <button class="px-2 py-1 rounded-full bg-slate-900 border border-slate-700 text-[9px] flex items-center gap-1">
+                    <span class="w-3 h-3 rounded-full bg-rose-500/30 flex items-center justify-center text-[9px] text-rose-200">+</span>
+                    Combo
+                  </button>
+                </div>
+
+                <div class="bg-slate-900/70 border border-slate-700/80 rounded-xl p-2.5 mb-2">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="text-[10px] text-slate-300">Tabla de precios por volumen</span>
+                    <span class="text-[9px] text-slate-500">Ej. Agua 500ml</span>
+                  </div>
+                  <div class="grid grid-cols-3 gap-1.5 text-[9px]">
+                    <div class="rounded-lg bg-slate-900 border border-slate-700/80 p-1.5 flex flex-col items-start">
+                      <span class="text-slate-400">1-5</span>
+                      <span class="text-slate-50 font-medium">$0,50</span>
+                    </div>
+                    <div class="rounded-lg bg-slate-900 border border-emerald-500/60 p-1.5 flex flex-col items-start">
+                      <span class="text-emerald-300">6-11</span>
+                      <span class="text-emerald-200 font-medium">$0,45</span>
+                    </div>
+                    <div class="rounded-lg bg-slate-900 border border-emerald-500/60 p-1.5 flex flex-col items-start">
+                      <span class="text-emerald-300">12+</span>
+                      <span class="text-emerald-200 font-medium">$0,40</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-slate-900/70 border border-slate-700/80 rounded-xl p-2.5 mb-2 flex flex-col gap-1.5 text-[9px]">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-1.5">
+                      <span class="w-6 h-6 rounded-md bg-gradient-to-br from-rose-500 to-orange-500 flex items-center justify-center text-[11px] text-white">C1</span>
+                      <div>
+                        <div class="text-slate-100 text-[10px]">Combo desayuno</div>
+                        <div class="text-slate-500">Café + pan + jugo</div>
+                      </div>
+                    </div>
+                    <div class="text-right text-[9px]">
+                      <div class="text-emerald-400 font-medium">$2,50</div>
+                      <div class="text-slate-500">Antes: $3,10</div>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between text-slate-500">
+                    <span>Stock se descuenta automáticamente por producto</span>
+                    <span class="text-[8px] bg-slate-900 px-1.5 py-[2px] rounded-full border border-slate-700">Pro</span>
+                  </div>
+                </div>
+
+                <div class="mt-auto pt-2 border-t border-slate-800/80 text-[9px] text-slate-500">
+                  Crea combos, precios por volumen y aumenta tus ventas sin hacer cuentas a mano.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="problema" class="py-10 md:py-14">
+      <div class="sf-container">
+        <div class="grid md:grid-cols-[1.1fr,1fr] gap-8 items-center">
+          <div class="scroll-fade">
+            <div class="sf-badge bg-slate-900 text-slate-100 inline-flex items-center gap-2 mb-3">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              El problema
+            </div>
+            <h2 class="section-title font-bold mb-3 text-slate-900">
+              Dejar tu inventario “a ojo” te está costando dinero todos los meses.
+            </h2>
+            <p class="text-slate-600 text-sm mb-5 max-w-xl">
+              Si no tienes claro qué entra, qué sale y cuánto stock te queda, es fácil perder ventas, comprar de más o vender productos por debajo de su precio ideal.
+            </p>
+            <div class="grid sm:grid-cols-2 gap-4 mb-6">
+              <div class="rounded-2xl border border-rose-100 bg-white/90 p-4">
+                <h3 class="font-semibold text-sm mb-1.5 text-rose-700">Sin StockFlow</h3>
+                <ul class="space-y-1.5 text-[13px] text-slate-600">
+                  <li>• Anotas ventas en cuadernos o WhatsApp.</li>
+                  <li>• No sabes qué productos se mueven más.</li>
+                  <li>• Te quedas sin stock sin darte cuenta.</li>
+                  <li>• Pierdes tiempo haciendo inventarios a mano.</li>
+                </ul>
+              </div>
+              <div class="rounded-2xl border border-emerald-100 bg-emerald-50/80 p-4">
+                <h3 class="font-semibold text-sm mb-1.5 text-emerald-800">Con StockFlow</h3>
+                <ul class="space-y-1.5 text-[13px] text-slate-700">
+                  <li>• Sabes en segundos qué tienes y cuánto vale.</li>
+                  <li>• Cada venta descuenta automáticamente del stock.</li>
+                  <li>• Te avisa qué productos están por agotarse.</li>
+                  <li>• Exportas tu inventario y ventas a PDF cuando lo necesites.</li>
+                </ul>
+              </div>
+            </div>
+            <p class="text-[13px] text-slate-500">
+              StockFlow fue creado en Ecuador por <span class="font-medium text-slate-700">Cristhian Loor</span> pensando en el día a día de pequeños negocios y emprendedores: simple, claro y sin complicaciones técnicas.
+            </p>
+          </div>
+          <div class="scroll-fade">
+            <div class="glass-card p-5 relative overflow-hidden">
+              <div class="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br from-[#C1356F]/25 to-transparent blur-3xl"></div>
+              <div class="absolute -bottom-10 -left-10 w-28 h-28 bg-gradient-to-tr from-[#597FA9]/25 to-transparent blur-2xl"></div>
+              <div class="relative">
+                <h3 class="font-semibold text-sm text-slate-900 mb-2">Lo que más escuchamos de emprendedores:</h3>
+                <ul class="space-y-1.5 text-[13px] text-slate-700 mb-4">
+                  <li>“Tengo muchas cosas, pero no sé exactamente cuánto tengo en stock.”</li>
+                  <li>“A veces vendo combos, pero luego no sé cuánto me quedó de cada producto.”</li>
+                  <li>“Quisiera tener precios por cantidad, pero me confundo haciendo las cuentas.”</li>
+                </ul>
+                <div class="rounded-xl border border-slate-100 bg-white/95 p-3 text-[13px] text-slate-700 flex gap-2">
+                  <span class="text-xl leading-none">💡</span>
+                  <div>
+                    <span class="font-semibold text-slate-900">StockFlow ordena todo eso por ti</span>: inventario, ventas, combos y precios por volumen en una sola app que puedes usar desde tu celular o computadora.
+                  </div>
+                </div>
+                <div class="mt-3 flex items-center justify-between text-[11px] text-slate-500">
+                  <span>Tu negocio, tus datos, siempre accesibles.</span>
+                  <span>Disponible desde 2026</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="py-10 md:py-14">
+      <div class="sf-container">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+          <div class="scroll-fade">
+            <div class="sf-badge bg-rose-50 text-rose-700 mb-3">
+              Beneficios clave
+            </div>
+            <h2 class="section-title font-bold mb-2 text-slate-900">
+              Más control, menos trabajo manual.
+            </h2>
+            <p class="text-slate-600 text-sm max-w-xl">
+              StockFlow no es “otro sistema más”. Es una app pensada para que cualquier persona pueda manejar su inventario, incluso sin experiencia técnica.
+            </p>
+          </div>
+          <div class="scroll-fade">
+            <div class="flex flex-wrap gap-2 text-[11px] text-slate-500">
+              <span class="chip flex items-center gap-1">
+                <span class="tag-dot bg-emerald-500"></span>
+                Datos seguros
+              </span>
+              <span class="chip flex items-center gap-1">
+                <span class="tag-dot bg-[#C1356F]"></span>
+                Diseñado para emprendedores
+              </span>
+              <span class="chip flex items-center gap-1">
+                <span class="tag-dot bg-[#597FA9]"></span>
+                Web + app móvil
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5">
+          <div class="scroll-fade glass-card p-5">
+            <div class="feature-icon bg-gradient-to-br from-[#C1356F] to-[#E57836] mb-3 shadow-md shadow-rose-400/40">
+              📦
+            </div>
+            <h3 class="font-semibold mb-1.5 text-sm text-slate-900">Ten claro qué tienes y cuánto vale</h3>
+            <p class="text-[13px] text-slate-600 mb-2.5">
+              Registra tus productos con cantidades y precios de compra/venta y mantén tu inventario actualizado automáticamente cada vez que vendes.
+            </p>
+            <ul class="space-y-1.5 text-[12px] text-slate-600">
+              <li>• Ve el valor total de tu inventario en segundos.</li>
+              <li>• Organiza por categorías y proveedores.</li>
+              <li>• Recibe alertas de productos con stock bajo.</li>
+            </ul>
+          </div>
+
+          <div class="scroll-fade glass-card p-5">
+            <div class="feature-icon bg-gradient-to-br from-[#597FA9] to-sky-500 mb-3 shadow-md shadow-sky-400/40">
+              💰
+            </div>
+            <h3 class="font-semibold mb-1.5 text-sm text-slate-900">Vende mejor con combos y precios por volumen</h3>
+            <p class="text-[13px] text-slate-600 mb-2.5">
+              Crea combos y descuentos por cantidad para aumentar tu ticket promedio sin perder el control del stock.
+            </p>
+            <ul class="space-y-1.5 text-[12px] text-slate-600">
+              <li>• Define precios diferentes según la cantidad vendida.</li>
+              <li>• Arma combos y packs con precio especial.</li>
+              <li>• El stock se descuenta automáticamente por producto.</li>
+            </ul>
+          </div>
+
+          <div class="scroll-fade glass-card p-5">
+            <div class="feature-icon bg-gradient-to-br from-[#E57836] to-amber-500 mb-3 shadow-md shadow-amber-300/40">
+              📊
+            </div>
+            <h3 class="font-semibold mb-1.5 text-sm text-slate-900">Toma decisiones con datos, no con suposiciones</h3>
+            <p class="text-[13px] text-slate-600 mb-2.5">
+              Desde un panel simple ves tus ventas, inventario y productos clave. Exporta reportes en PDF para respaldar tus números.
+            </p>
+            <ul class="space-y-1.5 text-[12px] text-slate-600">
+              <li>• Dashboard con ventas y valor de inventario.</li>
+              <li>• Ventas recientes siempre a la vista.</li>
+              <li>• Reportes en PDF para compartir o archivar.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="como-funciona" class="py-10 md:py-14">
+      <div class="sf-container">
+        <div class="scroll-fade text-center mb-7">
+          <div class="sf-badge bg-slate-900 text-slate-100 mx-auto mb-3">
+            Cómo funciona
+          </div>
+          <h2 class="section-title font-bold mb-2 text-slate-900">
+            Empieza hoy en 3 pasos sencillos
+          </h2>
+          <p class="text-slate-600 text-sm max-w-xl mx-auto">
+            No necesitas ser experto en tecnología. Si usas WhatsApp, puedes usar StockFlow.
+          </p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-5">
+          <div class="scroll-fade glass-card p-5">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-7 h-7 rounded-full bg-slate-900 text-white text-xs flex items-center justify-center font-semibold">
+                1
+              </div>
+              <span class="text-xs font-semibold text-slate-600 uppercase tracking-wide">Crea tu cuenta</span>
+            </div>
+            <h3 class="font-semibold text-sm mb-1 text-slate-900">Regístrate gratis</h3>
+            <p class="text-[13px] text-slate-600">
+              Crea tu cuenta en minutos. Configura el nombre de tu negocio y empieza con el plan Gratis sin tarjeta de crédito.
+            </p>
+          </div>
+          <div class="scroll-fade glass-card p-5">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-7 h-7 rounded-full bg-slate-900 text-white text-xs flex items-center justify-center font-semibold">
+                2
+              </div>
+              <span class="text-xs font-semibold text-slate-600 uppercase tracking-wide">Carga tu inventario</span>
+            </div>
+            <h3 class="font-semibold text-sm mb-1 text-slate-900">Agrega tus productos</h3>
+            <p class="text-[13px] text-slate-600">
+              Ingresa tus productos con cantidad y precios. Puedes organizarlos por categorías y proveedores para tener todo ordenado.
+            </p>
+          </div>
+          <div class="scroll-fade glass-card p-5">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-7 h-7 rounded-full bg-slate-900 text-white text-xs flex items-center justify-center font-semibold">
+                3
+              </div>
+              <span class="text-xs font-semibold text-slate-600 uppercase tracking-wide">Vende y controla</span>
+            </div>
+            <h3 class="font-semibold text-sm mb-1 text-slate-900">Registra tus ventas</h3>
+            <p class="text-[13px] text-slate-600">
+              Cada venta descuenta automáticamente del stock. Revisa tu dashboard y genera reportes cuando los necesites.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="precios" class="py-10 md:py-16">
+      <div class="sf-container">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-7">
+          <div class="scroll-fade">
+            <div class="sf-badge bg-sky-50 text-sky-700 mb-3">
+              Planes y precios
+            </div>
+            <h2 class="section-title font-bold mb-2 text-slate-900">
+              Empieza gratis, crece cuando tu negocio lo necesite.
+            </h2>
+            <p class="text-slate-600 text-sm max-w-xl">
+              Elige el plan que mejor se adapta a tu realidad. Puedes cambiar de plan en cualquier momento. Pagos seguros con PayPhone (Ecuador).
+            </p>
+          </div>
+          <div class="scroll-fade flex flex-col items-start md:items-end text-[11px] text-slate-500 gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-[#C1356F]"></span>
+              Precios en USD, facturación mensual.
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              Sin contratos largos. Cancela cuando quieras.
+            </div>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5 items-stretch">
+          <div class="scroll-fade price-card flex flex-col">
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <h3 class="font-semibold text-sm text-slate-900">Gratis</h3>
+                <p class="text-[12px] text-slate-500">Ideal para empezar y probar la app.</p>
+              </div>
+              <span class="sf-badge bg-slate-100 text-slate-700">Recomendado para probar</span>
+            </div>
+            <div class="flex items-baseline gap-1 mt-3 mb-4">
+              <span class="text-2xl font-bold text-slate-900">$0</span>
+              <span class="text-[12px] text-slate-500">/ mes</span>
+            </div>
+            <ul class="space-y-1.5 text-[13px] text-slate-600 mb-4">
+              <li>• Hasta <span class="font-medium">30 productos</span>.</li>
+              <li>• Registro de ventas básico.</li>
+              <li>• Dashboard con resumen simple.</li>
+              <li class="line-through decoration-slate-400/70">• Combos y precios por volumen.</li>
+              <li class="line-through decoration-slate-400/70">• Exportar PDF.</li>
+              <li class="line-through decoration-slate-400/70">• Marca personalizada.</li>
+            </ul>
+            <div class="mt-auto">
+              <a href="#cta" class="btn-ghost w-full justify-center text-[13px] mb-1.5">
+                Empezar con Gratis
+              </a>
+              <p class="text-[11px] text-slate-500 text-center">Perfecto si recién estás organizando tu inventario.</p>
+            </div>
+          </div>
+
+          <div class="scroll-fade price-card pro flex flex-col">
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <h3 class="font-semibold text-sm text-slate-900">Básico</h3>
+                <p class="text-[12px] text-slate-600">Para negocios que ya venden todos los días.</p>
+              </div>
+              <span class="sf-badge bg-[#C1356F] text-white">Más elegido</span>
+            </div>
+            <div class="flex items-baseline gap-1 mt-3 mb-4">
+              <span class="text-2xl font-bold text-slate-900">$9</span>
+              <span class="text-[12px] text-slate-600">/ mes</span>
+            </div>
+            <ul class="space-y-1.5 text-[13px] text-slate-700 mb-4">
+              <li>• <span class="font-medium">Productos ilimitados</span>.</li>
+              <li>• Crea <span class="font-medium">combos</span> con precio especial.</li>
+              <li>• <span class="font-medium">Precios por volumen</span> (descuentos por cantidad).</li>
+              <li>• Exporta inventario y ventas a <span class="font-medium">PDF</span>.</li>
+              <li>• Gestión de <span class="font-medium">proveedores</span>.</li>
+              <li class="line-through decoration-slate-400/70">• Marca personalizada.</li>
+            </ul>
+            <div class="mt-auto">
+              <button class="btn-primary w-full justify-center text-[13px] mb-1.5">
+                Elegir plan Básico
+              </button>
+              <p class="text-[11px] text-slate-600 text-center">
+                Ideal si ya tienes movimiento constante y quieres dejar atrás los cuadernos.
+              </p>
+            </div>
+          </div>
+
+          <div class="scroll-fade price-card flex flex-col">
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <h3 class="font-semibold text-sm text-slate-900">Pro</h3>
+                <p class="text-[12px] text-slate-500">Para negocios que quieren ir un paso más allá.</p>
+              </div>
+              <span class="sf-badge bg-slate-900 text-slate-50">Para crecer</span>
+            </div>
+            <div class="flex items-baseline gap-1 mt-3 mb-4">
+              <span class="text-2xl font-bold text-slate-900">$19</span>
+              <span class="text-[12px] text-slate-500">/ mes</span>
+            </div>
+            <ul class="space-y-1.5 text-[13px] text-slate-600 mb-4">
+              <li>• Todo lo del plan <span class="font-medium">Básico</span>.</li>
+              <li>• <span class="font-medium">Marca personalizada</span> (nombre de app, colores, logo).</li>
+              <li>• <span class="font-medium">Soporte prioritario</span> por correo.</li>
+              <li>• <span class="font-medium">Análisis con IA</span> (próximamente).</li>
+              <li>• <span class="font-medium">Reportes históricos avanzados</span> (próximamente).</li>
+            </ul>
+            <div class="mt-auto">
+              <button class="btn-ghost w-full justify-center text-[13px] mb-1.5 border-[#C1356F]/40 text-[#C1356F]">
+                Reservar Pro
+              </button>
+              <p class="text-[11px] text-slate-500 text-center">
+                Asegura hoy el precio y sé de los primeros en usar las funciones avanzadas.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="scroll-fade mt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-[11px] text-slate-500">
+          <div class="flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600 text-[13px]">✓</span>
+            <span>Pagos seguros con <span class="font-medium">PayPhone</span> para Ecuador.</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span>¿Tienes dudas sobre el plan ideal para ti?</span>
+            <a href="mailto:cristhian.loor05@outlook.com" class="text-[#C1356F] hover:underline font-medium">
+              Escríbenos y te ayudamos
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="testimonios" class="py-10 md:py-14">
+      <div class="sf-container">
+        <div class="scroll-fade text-center mb-7">
+          <div class="sf-badge bg-emerald-50 text-emerald-700 mx-auto mb-3">
+            Historias reales
+          </div>
+          <h2 class="section-title font-bold mb-2 text-slate-900">
+            Pensado para el día a día de los pequeños negocios.
+          </h2>
+          <p class="text-slate-600 text-sm max-w-xl mx-auto">
+            StockFlow nace acompañando a emprendedores que, como tú, manejan muchas tareas al mismo tiempo y necesitan herramientas simples pero potentes.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5">
+          <article class="scroll-fade glass-card p-5 flex flex-col">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-emerald-500 to-emerald-400 flex items-center justify-center text-white text-sm font-semibold">
+                MG
+              </div>
+              <div class="text-sm">
+                <div class="font-semibold text-slate-900">Martha G.</div>
+                <div class="text-[11px] text-slate-500">Dueña de minimarket en Guayaquil</div>
+              </div>
+            </div>
+            <p class="text-[13px] text-slate-700 mb-3">
+              “Antes tenía listas en hojas sueltas y no sabía en qué momento me quedaba sin ciertos productos. Ahora reviso el app en mi celular y sé de inmediato qué tengo y qué debo pedir.”
+            </p>
+            <div class="mt-auto text-[11px] text-emerald-600 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              Menos quiebres de stock en productos clave.
+            </div>
+          </article>
+
+          <article class="scroll-fade glass-card p-5 flex flex-col">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#C1356F] to-[#E57836] flex items-center justify-center text-white text-sm font-semibold">
+                JL
+              </div>
+              <div class="text-sm">
+                <div class="font-semibold text-slate-900">José Luis R.</div>
+                <div class="text-[11px] text-slate-500">Emprendedor de snacks en Quito</div>
+              </div>
+            </div>
+            <p class="text-[13px] text-slate-700 mb-3">
+              “Lo que más me gusta es poder manejar combos y precios por cantidad. Ya no hago las cuentas en la calculadora; StockFlow me cuida el margen y el stock.”
+            </p>
+            <div class="mt-auto text-[11px] text-[#C1356F] flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#C1356F]"></span>
+              Más claridad en precios y promociones.
+            </div>
+          </article>
+
+          <article class="scroll-fade glass-card p-5 flex flex-col">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#597FA9] to-sky-500 flex items-center justify-center text-white text-sm font-semibold">
+                AC
+              </div>
+              <div class="text-sm">
+                <div class="font-semibold text-slate-900">Andrea C.</div>
+                <div class="text-[11px] text-slate-500">Dueña de bazar en Manta</div>
+              </div>
+            </div>
+            <p class="text-[13px] text-slate-700 mb-3">
+              “No soy muy amiga de la tecnología, pero con StockFlow fue sencillo. El dashboard es claro y los reportes en PDF me sirven para ver cómo va el negocio cada mes.”
+            </p>
+            <div class="mt-auto text-[11px] text-sky-600 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+              Más confianza al tomar decisiones.
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="py-10 md:py-14">
+      <div class="sf-container">
+        <div class="grid md:grid-cols-[1.1fr,1fr] gap-7">
+          <div class="scroll-fade">
+            <div class="sf-badge bg-slate-900 text-slate-100 mb-3">
+              Preguntas frecuentes
+            </div>
+            <h2 class="section-title font-bold mb-2 text-slate-900">
+              Resolvemos tus dudas antes de empezar.
+            </h2>
+            <p class="text-slate-600 text-sm mb-4 max-w-xl">
+              Si no encuentras tu pregunta aquí, puedes escribir a <a href="mailto:cristhian.loor05@outlook.com" class="text-[#C1356F] hover:underline">cristhian.loor05@outlook.com</a> y con gusto te ayudaremos.
+            </p>
+            <div class="space-y-2.5 text-[13px]">
+              <div class="faq-item">
+                <div class="flex items-center justify-between gap-3">
+                  <h3 class="font-semibold text-slate-900 text-sm">¿Necesito ser experto en sistemas para usar StockFlow?</h3>
+                  <span class="text-xl text-slate-400">+</span>
+                </div>
+                <div class="faq-answer text-slate-600 text-[13px]">
+                  No. StockFlow fue diseñado específicamente para personas sin conocimientos técnicos. La interfaz es sencilla, en español, y se parece a las apps que ya usas todos los días. Si sabes usar WhatsApp, podrás usar StockFlow sin problema.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="flex items-center justify-between gap-3">
+                  <h3 class="font-semibold text-slate-900 text-sm">¿Puedo usarlo desde mi celular y también en la computadora?</h3>
+                  <span class="text-xl text-slate-400">+</span>
+                </div>
+                <div class="faq-answer text-slate-600 text-[13px]">
+                  Sí. StockFlow funciona como aplicación móvil y también desde la web. Puedes revisar tu inventario en el local desde tu celular y, si quieres, ver reportes más tranquilos en la computadora.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="flex items-center justify-between gap-3">
+                  <h3 class="font-semibold text-slate-900 text-sm">¿Qué pasa si se va el internet o se apaga mi celular?</h3>
+                  <span class="text-xl text-slate-400">+</span>
+                </div>
+                <div class="faq-answer text-slate-600 text-[13px]">
+                  Tus datos se guardan de forma segura en la nube. Si se va el internet o cambias de dispositivo, cuando vuelvas a iniciar sesión tendrás toda tu información intacta. Tu negocio no depende de un solo teléfono.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="flex items-center justify-between gap-3">
+                  <h3 class="font-semibold text-slate-900 text-sm">¿Mis datos están seguros?</h3>
+                  <span class="text-xl text-slate-400">+</span>
+                </div>
+                <div class="faq-answer text-slate-600 text-[13px]">
+                  Sí. Tus datos de inventario y ventas se almacenan de forma segura y privada. Solo tú (y las personas que autorices) pueden ver tu información. Además, contamos con copias de respaldo para evitar pérdidas.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="flex items-center justify-between gap-3">
+                  <h3 class="font-semibold text-slate-900 text-sm">¿Puedo cambiar de plan después?</h3>
+                  <span class="text-xl text-slate-400">+</span>
+                </div>
+                <div class="faq-answer text-slate-600 text-[13px]">
+                  Claro. Puedes empezar con el plan Gratis y cambiar a Básico o Pro cuando tu negocio lo necesite. No hay contratos largos y puedes cancelar en cualquier momento.
+                </div>
+              </div>
+
+              <div class="faq-item">
+                <div class="flex items-center justify-between gap-3">
+                  <h3 class="font-semibold text-slate-900 text-sm">¿Cómo se realiza el pago en Ecuador?</h3>
+                  <span class="text-xl text-slate-400">+</span>
+                </div>
+                <div class="faq-answer text-slate-600 text-[13px]">
+                  Los pagos se realizan de forma segura con PayPhone, una plataforma muy usada en Ecuador. Podrás pagar tu suscripción mensual sin compartir datos sensibles directamente con nosotros.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="scroll-fade">
+            <div class="glass-card p-5">
+              <h3 class="font-semibold text-sm text-slate-900 mb-1.5">¿Aún no estás seguro?</h3>
+              <p class="text-[13px] text-slate-600 mb-3">
+                Si quieres, puedes empezar solo con el plan Gratis, probar con algunos productos y luego decidir. Sin tarjetas, sin compromisos.
+              </p>
+              <div class="rounded-xl border border-emerald-100 bg-emerald-50/80 p-4 text-[13px] text-slate-800 mb-3">
+                <p class="mb-2">
+                  “La idea de StockFlow es darte <span class="font-semibold">tranquilidad</span>. Que puedas abrir la app y saber cómo está tu negocio sin hacer cuentas largas ni revisar cuadernos.”
+                </p>
+                <p class="text-[11px] text-emerald-700">
+                  — Cristhian Loor · Desarrollador de StockFlow
+                </p>
+              </div>
+              <a href="#cta" class="btn-primary w-full justify-center text-[13px] mb-2">
+                Probar StockFlow gratis
+              </a>
+              <p class="text-[11px] text-slate-500 text-center">
+                Cuando estés listo, podrás subir al plan Básico o Pro con PayPhone.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cta" class="py-10 md:py-16">
+      <div class="sf-container">
+        <div class="glass-card relative overflow-hidden px-5 py-7 md:px-8 md:py-9">
+          <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute -top-16 -left-10 w-40 h-40 bg-gradient-to-br from-[#C1356F]/25 via-[#E57836]/20 to-transparent blur-3xl"></div>
+            <div class="absolute -bottom-14 -right-6 w-44 h-44 bg-gradient-to-tr from-[#597FA9]/25 via-sky-400/20 to-transparent blur-3xl"></div>
+          </div>
+          <div class="relative grid md:grid-cols-[1.2fr,1fr] gap-6 items-center">
+            <div>
+              <div class="sf-badge bg-slate-900 text-slate-100 mb-3 inline-flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                Empieza hoy
+              </div>
+              <h2 class="section-title font-bold mb-2 text-slate-900">
+                Ordena tu inventario hoy y duerme más tranquilo mañana.
+              </h2>
+              <p class="text-slate-600 text-sm mb-4 max-w-xl">
+                Prueba StockFlow con el plan Gratis. Si te ayuda a tener más control y menos estrés, podrás subir de plan cuando tu negocio lo necesite.
+              </p>
+              <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center mb-3">
+                <form class="w-full sm:flex-1 flex flex-col sm:flex-row gap-2">
+                  <input type="email" required placeholder="Tu correo para crear la cuenta" class="flex-1 rounded-full border border-slate-200 px-3 py-2 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#C1356F]/60 focus:border-transparent placeholder:text-slate-400 bg-white/90" />
+                  <button type="submit" class="btn-primary text-[13px] w-full sm:w-auto justify-center whitespace-nowrap">
+                    Crear cuenta Gratis
+                  </button>
+                </form>
+              </div>
+              <div class="flex flex-wrap items-center gap-3 text-[11px] text-slate-500">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-4 h-4 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600 text-[11px]">✓</span>
+                  <span>Sin tarjeta de crédito para el plan Gratis.</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="w-4 h-4 rounded-full bg-sky-500/10 flex items-center justify-center text-sky-600 text-[11px]">✓</span>
+                  <span>Datos seguros y respaldados.</span>
+                </div>
+              </div>
+            </div>
+            <div class="relative">
+              <div class="rounded-2xl border border-slate-100 bg-white/95 p-4 shadow-lg shadow-slate-900/5">
+                <h3 class="font-semibold text-sm text-slate-900 mb-2">Pensado para tu realidad</h3>
+                <ul class="space-y-1.5 text-[13px] text-slate-600 mb-3">
+                  <li>• Negocios pequeños que venden todos los días.</li>
+                  <li>• Emprendedores que combinan trabajo y vida personal.</li>
+                  <li>• Personas que quieren claridad sin volverse contadores.</li>
+                </ul>
+                <div class="rounded-xl border border-slate-100 bg-slate-50/90 p-3 text-[12px] text-slate-600">
+                  <p class="mb-1.5">
+                    StockFlow te acompaña a crecer: hoy te ayuda a dejar los cuadernos, mañana te ayudará a entender mejor tus números con análisis inteligentes.
+                  </p>
+                  <p class="text-[11px] text-slate-500">
+                    Crea tu cuenta hoy y da el primer paso hacia un negocio más ordenado.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pt-8 pb-6 mt-4">
+    <div class="sf-container">
+      <div class="grid md:grid-cols-4 gap-6 mb-6">
+        <div class="md:col-span-2">
+          <div class="flex items-center gap-2 mb-3">
+            <img src="logo stock flow.png" alt="Logo de StockFlow" class="w-8 h-8 rounded-2xl object-cover" />
+            <div>
+              <div class="text-sm font-semibold text-slate-100">StockFlow</div>
+              <div class="text-[11px] text-slate-400">Gestión de inventario para pequeños negocios en Ecuador.</div>
+            </div>
+          </div>
+          <p class="text-[12px] text-slate-400 max-w-md mb-2">
+            Desarrollado por <span class="font-medium text-slate-200">Cristhian Loor</span>. Pensado para que tengas más control sobre tu negocio y menos estrés con los números.
+          </p>
+          <p class="text-[11px] text-slate-500">
+            Contacto: <a href="mailto:cristhian.loor05@outlook.com" class="text-slate-200 hover:underline">cristhian.loor05@outlook.com</a>
+          </p>
+        </div>
+        <div>
+          <h3 class="text-[12px] font-semibold text-slate-200 mb-2">Producto</h3>
+          <ul class="space-y-1.5 text-[12px] text-slate-400">
+            <li><a href="#features" class="hover:text-slate-200">Beneficios</a></li>
+            <li><a href="#precios" class="hover:text-slate-200">Planes y precios</a></li>
+            <li><a href="#faq" class="hover:text-slate-200">Preguntas frecuentes</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-[12px] font-semibold text-slate-200 mb-2">Legal</h3>
+          <ul class="space-y-1.5 text-[12px] text-slate-400">
+            <li>Política de privacidad (próx.)</li>
+            <li>Términos y condiciones (próx.)</li>
+            <li>Uso de datos (próx.)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-slate-800 pt-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
+        <p class="text-[11px] text-slate-500">
+          © 2026 StockFlow. Todos los derechos reservados.
+        </p>
+        <p class="text-[11px] text-slate-500">
+          Diseñado para emprendedores de Ecuador que quieren entender mejor su negocio.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const mobileNav = document.getElementById('mobile-nav');
+    const mobileNavToggle = document.querySelector('[data-mobile-nav-toggle]');
+
+    if (mobileNav && mobileNavToggle) {
+      mobileNavToggle.setAttribute('aria-label', 'Abrir menu');
+      const toggleLabel = mobileNavToggle.querySelector('span');
+      if (toggleLabel) {
+        toggleLabel.textContent = '\u2630';
+        toggleLabel.className = 'text-lg leading-none';
+      }
+
+      const mobileProblemLink = mobileNav.querySelector('a[href="#problema"]');
+      if (mobileProblemLink) {
+        mobileProblemLink.textContent = 'Por qu\u00e9 StockFlow';
+      }
+
+      mobileNavToggle.addEventListener('click', () => {
+        const isOpen = mobileNav.classList.toggle('open');
+        mobileNavToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+
+      mobileNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileNav.classList.remove('open');
+          mobileNavToggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+
+    document.querySelectorAll('.hero-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.hero-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const screen = tab.getAttribute('data-screen');
+        document.querySelectorAll('.phone-screen').forEach(s => s.classList.add('hidden'));
+        document.getElementById('screen-' + screen).classList.remove('hidden');
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.scroll-fade').forEach(el => observer.observe(el));
+
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+
+    const ctaForm = document.querySelector('#cta form');
+    if (ctaForm) {
+      ctaForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const emailInput = ctaForm.querySelector('input[type="email"]');
+        const email = emailInput.value.trim();
+        if (!email) return;
+        alert('Gracias por tu interés en StockFlow. Nos pondremos en contacto al correo: ' + email);
+        emailInput.value = '';
+      });
+    }
+  </script>
+</body>
+</html>
