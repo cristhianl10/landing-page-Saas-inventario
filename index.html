@@ -446,9 +446,6 @@
         <a href="#faq" class="text-slate-700 hover:text-slate-900">Preguntas</a>
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        <button class="hidden md:inline-flex btn-ghost">
-          <span>Iniciar sesión</span>
-        </button>
         <a href="#cta" class="hidden sm:inline-flex btn-primary text-xs md:text-sm">
           Empezar gratis
         </a>
@@ -490,7 +487,7 @@
           </p>
           <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center mb-4">
             <a href="#cta" class="btn-primary w-full sm:w-auto justify-center">
-              Crear cuenta gratis
+              Empezar gratis
               <span class="text-xs font-normal bg-white/10 rounded-full px-2 py-[2px]">Sin tarjeta</span>
             </a>
             <button class="btn-ghost w-full sm:w-auto justify-center" onclick="document.querySelector('#como-funciona').scrollIntoView({behavior:'smooth'})">
@@ -1129,7 +1126,7 @@
                 </p>
               </div>
               <a href="#cta" class="btn-primary w-full justify-center text-[13px] mb-2">
-                Probar StockFlow gratis
+                Descargar StockFlow
               </a>
               <p class="text-[11px] text-slate-500 text-center">
                 Cuando estés listo, podrás subir al plan Básico o Pro con PayPhone.
@@ -1147,53 +1144,44 @@
             <div class="absolute -top-16 -left-10 w-40 h-40 bg-gradient-to-br from-[#C1356F]/25 via-[#E57836]/20 to-transparent blur-3xl"></div>
             <div class="absolute -bottom-14 -right-6 w-44 h-44 bg-gradient-to-tr from-[#597FA9]/25 via-sky-400/20 to-transparent blur-3xl"></div>
           </div>
-          <div class="relative grid md:grid-cols-[1.2fr,1fr] gap-6 items-center">
-            <div>
-              <div class="sf-badge bg-slate-900 text-slate-100 mb-3 inline-flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                Empieza hoy
-              </div>
-              <h2 class="section-title font-bold mb-2 text-slate-900">
-                Ordena tu inventario hoy y duerme más tranquilo mañana.
-              </h2>
-              <p class="text-slate-600 text-sm mb-4 max-w-xl">
-                Prueba StockFlow con el plan Gratis. Si te ayuda a tener más control y menos estrés, podrás subir de plan cuando tu negocio lo necesite.
-              </p>
-              <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center mb-3">
-                <form class="w-full sm:flex-1 flex flex-col sm:flex-row gap-2">
-                  <input type="email" required placeholder="Tu correo para crear la cuenta" class="flex-1 rounded-full border border-slate-200 px-3 py-2 text-[13px] focus:outline-none focus:ring-2 focus:ring-[#C1356F]/60 focus:border-transparent placeholder:text-slate-400 bg-white/90" />
-                  <button type="submit" class="btn-primary text-[13px] w-full sm:w-auto justify-center whitespace-nowrap">
-                    Crear cuenta Gratis
-                  </button>
-                </form>
-              </div>
-              <div class="flex flex-wrap items-center gap-3 text-[11px] text-slate-500">
-                <div class="flex items-center gap-1.5">
-                  <span class="w-4 h-4 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600 text-[11px]">✓</span>
-                  <span>Sin tarjeta de crédito para el plan Gratis.</span>
-                </div>
-                <div class="flex items-center gap-1.5">
-                  <span class="w-4 h-4 rounded-full bg-sky-500/10 flex items-center justify-center text-sky-600 text-[11px]">✓</span>
-                  <span>Datos seguros y respaldados.</span>
-                </div>
-              </div>
+          <div class="relative text-center">
+            <div class="sf-badge bg-slate-900 text-slate-100 mb-3 inline-flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              Descarga la app
             </div>
-            <div class="relative">
-              <div class="rounded-2xl border border-slate-100 bg-white/95 p-4 shadow-lg shadow-slate-900/5">
-                <h3 class="font-semibold text-sm text-slate-900 mb-2">Pensado para tu realidad</h3>
-                <ul class="space-y-1.5 text-[13px] text-slate-600 mb-3">
-                  <li>• Negocios pequeños que venden todos los días.</li>
-                  <li>• Emprendedores que quieren clientes, proveedores y ventas en un solo lugar.</li>
-                  <li>• Personas que necesitan exportar, respaldar y sincronizar sin complicarse.</li>
-                </ul>
-                <div class="rounded-xl border border-slate-100 bg-slate-50/90 p-3 text-[12px] text-slate-600">
-                  <p class="mb-1.5">
-                    StockFlow te acompaña a crecer: hoy te ayuda a dejar los cuadernos y mañana te deja operar con más orden, reportes claros y una marca propia.
-                  </p>
-                  <p class="text-[11px] text-slate-500">
-                    Crea tu cuenta hoy y da el primer paso hacia un negocio más ordenado.
-                  </p>
+            <h2 class="section-title font-bold mb-2 text-slate-900">
+              Ordena tu inventario hoy y duerme más tranquilo mañana.
+            </h2>
+            <p class="text-slate-600 text-sm mb-6 max-w-xl mx-auto">
+              Descarga StockFlow en tu dispositivo preferido. Empieza gratis y cuando tu negocio crezca, podrás acceder a más funciones.
+            </p>
+            
+            <div class="grid gap-4 max-w-xs mx-auto mb-6">
+              <a href="descargas/app-release.apk" download class="group relative rounded-2xl border border-slate-200 bg-white/95 p-4 hover:border-[#C1356F]/50 hover:shadow-lg hover:shadow-[#C1356F]/10 transition-all duration-200">
+                <div class="flex flex-col items-center gap-3">
+                  <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-400 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30 group-hover:scale-105 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 15.3414c-.5 0-.909.4046-.909.9045s.409.9045.909.9045.909-.4045.909-.9045-.409-.9045-.909-.9045zm-11.046 0c-.5 0-.909.4046-.909.9045s.409.9045.909.9045.909-.4045.909-.9045-.409-.9045-.909-.9045zm11.4-6.1173l2.0786-3.595c.1118-.1932.0456-.4419-.1476-.5537-.1932-.1119-.4419-.0456-.5537.1476L17.2294 8.66c-1.8303-.8336-3.9052-1.303-6.1147-1.303-2.2216 0-4.3057.4752-6.1442 1.3178L2.946 5.2876c-.1119-.1932-.3606-.2594-.5537-.1476-.1932.1118-.2594.3605-.1476.5537l2.0706 3.5866C1.5459 11.2081 0 14.2255 0 17.594h24c0-3.3826-1.5556-6.4086-3.9703-8.37z"/></svg>
+                  </div>
+                  <div class="text-center">
+                    <div class="font-semibold text-slate-900 text-sm">Android</div>
+                    <div class="text-[11px] text-slate-500">Descargar APK</div>
+                  </div>
                 </div>
+              </a>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center gap-4 text-[11px] text-slate-500">
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600 text-[11px]">✓</span>
+                <span>Sin tarjeta de crédito para empezar.</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded-full bg-sky-500/10 flex items-center justify-center text-sky-600 text-[11px]">✓</span>
+                <span>Datos seguros y respaldados.</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-600 text-[11px]">✓</span>
+                <span>Sincronización entre dispositivos.</span>
               </div>
             </div>
           </div>
@@ -1306,18 +1294,6 @@
         if (!isOpen) item.classList.add('open');
       });
     });
-
-    const ctaForm = document.querySelector('#cta form');
-    if (ctaForm) {
-      ctaForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const emailInput = ctaForm.querySelector('input[type="email"]');
-        const email = emailInput.value.trim();
-        if (!email) return;
-        alert('Gracias por tu interés en StockFlow. Nos pondremos en contacto al correo: ' + email);
-        emailInput.value = '';
-      });
-    }
   </script>
 </body>
 </html>
